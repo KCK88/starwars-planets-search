@@ -1,8 +1,22 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import PlanetsContext from './PlanetsContext';
+import { PlanetType } from '../Types';
 
 export default function PlanetsProvider({ children } : { children: ReactNode }) {
-  const [planets, setPlanets] = useState<[]>([]);
+  const [planets, setPlanets] = useState<PlanetType[]>([]);
+  const [filter, setFilter] = useState('');
+
+  const handleFilterChange = ({ target }:
+  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) : boolean => {
+    if (planets.some((planet: PlanetType) => (
+      planet.name.includes(target.value)
+    ))) {
+      console.log('true handle');
+      return true;
+    }
+    console.log('false handle');
+    return false;
+  };
 
   const fetchPlanets = async () => {
     try {
@@ -24,11 +38,13 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
       setPlanets(planetsData);
     };
 
-    fetchData();
-  }, []);
+    if (filter === '' || filter === undefined || filter === null) fetchData();
+  }, [filter]);
 
   return (
-    <PlanetsContext.Provider value={ { planets } }>
+    <PlanetsContext.Provider
+      value={ { planets, setPlanets, handleFilterChange, filter, setFilter } }
+    >
       {children}
     </PlanetsContext.Provider>
   );

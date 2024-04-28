@@ -4,11 +4,29 @@ import { PlanetType } from '../Types';
 
 export default function Table() {
   const planetsContext = useContext(PlanetsContext);
-  const { planets } = planetsContext;
-  console.log(planets);
+  const { planets, setPlanets, filter, handleFilterChange, setFilter } = planetsContext;
+  let visiblePlanets: PlanetType[] = [...planets];
+
+  const planetFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+    if (handleFilterChange(e)) {
+      visiblePlanets = planets
+        .filter((planet: PlanetType) => planet.name.includes(e.target.value));
+      setPlanets(visiblePlanets);
+    } else {
+      visiblePlanets = [...planets];
+    }
+  };
 
   return (
     <div>
+      <input
+        type="text"
+        placeholder="Digite o nome do planeta..."
+        value={ filter }
+        onChange={ planetFilter }
+        data-testid="name-filter"
+      />
       <table>
         <thead>
           <tr>
@@ -28,11 +46,11 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {planets.map((planet: PlanetType) => (
+          {visiblePlanets.map((planet: PlanetType) => (
             <tr key={ planet.name }>
               <td>{planet.name}</td>
-              <td>{planet.created}</td>
               <td>{planet.climate}</td>
+              <td>{planet.created}</td>
               <td>{planet.diameter}</td>
               <td>{planet.edited}</td>
               <td>{planet.films}</td>

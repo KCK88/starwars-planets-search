@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface PlanetType {
   climate: string;
   created: string;
@@ -14,5 +16,10 @@ export interface PlanetType {
   url: string;
 }
 export interface PlanetContextType {
-  planets: []
+  planets: PlanetType[];
+  setPlanets: React.Dispatch<React.SetStateAction<PlanetType[]>>;
+  handleFilterChange: ({ target }:
+  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> boolean;
+  filter: string;
+  setFilter: Dispatch<SetStateAction<string>>;
 }
