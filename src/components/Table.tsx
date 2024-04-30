@@ -10,7 +10,6 @@ export default function Table() {
     handleFilterChange,
     setPlanetsFilter,
     numbersFilter,
-    setNumbersFilter,
     handleNumbersChange,
     handleNumbersSubmit } = planetsContext;
   let visiblePlanets: PlanetType[] = [...planets];
