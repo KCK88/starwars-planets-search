@@ -20,6 +20,18 @@ export interface PlanetContextType {
   setPlanets: React.Dispatch<React.SetStateAction<PlanetType[]>>;
   handleFilterChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> boolean;
-  filter: string;
-  setFilter: Dispatch<SetStateAction<string>>;
+  planetsFilter: string;
+  setPlanetsFilter: Dispatch<SetStateAction<string>>;
+  numbersFilter: NumbersType;
+  setNumbersFilter: React.Dispatch<React.SetStateAction<NumbersType>>;
+  handleNumbersChange: ({ target }:
+  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleNumbersSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+}
+
+export interface NumbersType {
+  column: 'population'
+  | 'orbital_period' | 'diameter' | 'rotation_period' | 'surface_water';
+  operator: string;
+  value: string;
 }

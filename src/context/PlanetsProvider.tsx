@@ -1,21 +1,60 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import PlanetsContext from './PlanetsContext';
-import { PlanetType } from '../Types';
+import { NumbersType, PlanetType } from '../Types';
 
 export default function PlanetsProvider({ children } : { children: ReactNode }) {
   const [planets, setPlanets] = useState<PlanetType[]>([]);
-  const [filter, setFilter] = useState('');
+  const [planetsFilter, setPlanetsFilter] = useState('');
+  const [numbersFilter, setNumbersFilter] = useState<NumbersType>({
+    column: 'population',
+    operator: 'maior que',
+    value: '0',
+  });
 
   const handleFilterChange = ({ target }:
-  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) : boolean => {
-    if (planets.some((planet: PlanetType) => (
+  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): boolean => {
+    return !!(planets.some((planet: PlanetType) => (
       planet.name.includes(target.value)
-    ))) {
-      console.log('true handle');
-      return true;
+    )));
+  };
+
+  const handleNumbersChange = ({ target }:
+  React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name: targetName, value } = target;
+    setNumbersFilter({ ...numbersFilter, [targetName]: value });
+  };
+
+  const handleNumbersSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    filterPlanets();
+  };
+
+  const filterPlanets = () => {
+    const { column, operator, value } = numbersFilter;
+    let filteredPlanets: PlanetType[] = [];
+
+    switch (operator) {
+      case 'maior que':
+        filteredPlanets = planets.filter(
+          (planet: PlanetType) => Number(planet[column]) > Number(value),
+        );
+        break;
+      case 'menor que':
+        filteredPlanets = planets.filter(
+          (planet: PlanetType) => Number(planet[column]) < Number(value),
+        );
+        break;
+      case 'igual a':
+        filteredPlanets = planets.filter(
+          (planet: PlanetType) => Number(planet[column]) === Number(value),
+        );
+        break;
+      default:
+        filteredPlanets = [...planets];
+        break;
     }
-    console.log('false handle');
-    return false;
+
+    setPlanets(filteredPlanets);
   };
 
   const fetchPlanets = async () => {
@@ -38,12 +77,22 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
       setPlanets(planetsData);
     };
 
-    if (filter === '' || filter === undefined || filter === null) fetchData();
-  }, [filter]);
+    if (planetsFilter === ''
+    || planetsFilter === undefined
+    || planetsFilter === null) fetchData();
+  }, [planetsFilter]);
 
   return (
     <PlanetsContext.Provider
-      value={ { planets, setPlanets, handleFilterChange, filter, setFilter } }
+      value={ { planets,
+        setPlanets,
+        handleFilterChange,
+        planetsFilter,
+        setPlanetsFilter,
+        numbersFilter,
+        setNumbersFilter,
+        handleNumbersChange,
+        handleNumbersSubmit } }
     >
       {children}
     </PlanetsContext.Provider>

@@ -4,29 +4,81 @@ import { PlanetType } from '../Types';
 
 export default function Table() {
   const planetsContext = useContext(PlanetsContext);
-  const { planets, setPlanets, filter, handleFilterChange, setFilter } = planetsContext;
+  const { planets,
+    setPlanets,
+    planetsFilter,
+    handleFilterChange,
+    setPlanetsFilter,
+    numbersFilter,
+    setNumbersFilter,
+    handleNumbersChange,
+    handleNumbersSubmit } = planetsContext;
   let visiblePlanets: PlanetType[] = [...planets];
 
-  const planetFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(e.target.value);
-    if (handleFilterChange(e)) {
+  const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlanetsFilter(event.target.value);
+    if (handleFilterChange(event)) {
       visiblePlanets = planets
-        .filter((planet: PlanetType) => planet.name.includes(e.target.value));
+        .filter((planet: PlanetType) => planet.name.includes(event.target.value));
       setPlanets(visiblePlanets);
     } else {
       visiblePlanets = [...planets];
     }
   };
 
+  const { column, operator, value } = numbersFilter;
+
   return (
     <div>
       <input
         type="text"
-        placeholder="Digite o nome do planeta..."
-        value={ filter }
+        placeholder="Enter the name of the planet..."
+        value={ planetsFilter }
         onChange={ planetFilter }
         data-testid="name-filter"
       />
+      <form onSubmit={ handleNumbersSubmit }>
+        <label htmlFor="column">Column</label>
+        <select
+          name="column"
+          id="column"
+          data-testid="column-filter"
+          value={ column }
+          onChange={ handleNumbersChange }
+        >
+          <option value="population">population</option>
+          <option value="orbital_period">orbital_period</option>
+          <option value="diameter">diameter</option>
+          <option value="rotation_period">rotation_period</option>
+          <option value="surface_water">surface_water</option>
+        </select>
+
+        <label htmlFor="operator">Operator</label>
+        <select
+          name="operator"
+          id="operator"
+          data-testid="comparison-filter"
+          value={ operator }
+          onChange={ handleNumbersChange }
+        >
+          <option value="maior que">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
+        </select>
+
+        <label htmlFor="value">Number</label>
+        <input
+          type="value"
+          value={ value }
+          name="value"
+          id="value"
+          data-testid="value-filter"
+          onChange={ handleNumbersChange }
+        />
+
+        <button type="submit" data-testid="button-filter">Filtrar</button>
+
+      </form>
       <table>
         <thead>
           <tr>
@@ -64,7 +116,6 @@ export default function Table() {
             </tr>
           ))}
         </tbody>
-
       </table>
     </div>
 
