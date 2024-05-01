@@ -11,7 +11,8 @@ export default function Table() {
     setPlanetsFilter,
     numbersFilter,
     handleNumbersChange,
-    handleNumbersSubmit } = planetsContext;
+    handleNumbersSubmit,
+    filterOptions } = planetsContext;
   let visiblePlanets: PlanetType[] = [...planets];
 
   const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,11 +46,9 @@ export default function Table() {
           value={ column }
           onChange={ handleNumbersChange }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          {filterOptions.map((option) => (
+            <option key={ option } value={ option }>{option}</option>
+          ))}
         </select>
 
         <label htmlFor="operator">Operator</label>

@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import PlanetsContext from './PlanetsContext';
-import { NumbersType, PlanetType } from '../Types';
+import { ColumnType, NumbersType, PlanetType } from '../Types';
 
 export default function PlanetsProvider({ children } : { children: ReactNode }) {
   const [planets, setPlanets] = useState<PlanetType[]>([]);
@@ -10,6 +10,11 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     operator: 'maior que',
     value: '0',
   });
+  const [filterOptions, setFilterOptions] = useState<ColumnType[]>(['population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water']);
 
   const handleFilterChange = ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): boolean => {
@@ -27,7 +32,11 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
   const handleNumbersSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     filterPlanets();
+    const options = filterOptions.filter((option) => option !== numbersFilter.column);
+    setFilterOptions(options);
+    setNumbersFilter({ ...numbersFilter, column: options[0] });
   };
+  console.log(filterOptions);
 
   const filterPlanets = () => {
     const { column, operator, value } = numbersFilter;
@@ -92,7 +101,9 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         numbersFilter,
         setNumbersFilter,
         handleNumbersChange,
-        handleNumbersSubmit } }
+        handleNumbersSubmit,
+        filterOptions,
+        setFilterOptions } }
     >
       {children}
     </PlanetsContext.Provider>

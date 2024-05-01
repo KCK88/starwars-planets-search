@@ -27,11 +27,14 @@ export interface PlanetContextType {
   handleNumbersChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleNumbersSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  filterOptions: string[];
+  setFilterOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
 }
 
 export interface NumbersType {
-  column: 'population'
-  | 'orbital_period' | 'diameter' | 'rotation_period' | 'surface_water';
+  column: ColumnType
   operator: string;
   value: string;
 }
+export type ColumnType =
+  'population' | 'orbital_period' | 'diameter' | 'rotation_period' | 'surface_water';
