@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Table from '../components/Table';
 import PlanetsProvider from '../context/PlanetsProvider';
 import App from '../App';
 
 
 describe('Teste se o componente renderiza corretamente', ()=> {
-  test('renders table with correct headers', () => {
+  test('renderiza a tabela com cabeçalhos corretos', () => {
     render(<PlanetsProvider><App /></PlanetsProvider>);
 
     const columnLabel = screen.getByText(/column/i);
@@ -37,6 +37,12 @@ describe('Teste se o componente renderiza corretamente', ()=> {
     expect(colunSurfaceWater).toBeInTheDocument();
     expect(colunTerrain).toBeInTheDocument();
     expect(colunUrl).toBeInTheDocument();
-       expect(columnLabel).toBeInTheDocument();
+    expect(columnLabel).toBeInTheDocument();
   });
+  test('Testa se o input column está funcionando', () =>{
+    render(<PlanetsProvider><App /></PlanetsProvider>);
+    const inputColumn = screen.getByRole('textbox', {  name: /text/i})
+    fireEvent.change(inputColumn, {target:{value: '0'}})
+    expect(inputColumn).toHaveValue('0')
+  })
 });

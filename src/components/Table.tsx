@@ -30,9 +30,11 @@ export default function Table() {
 
   return (
     <div>
+      <label htmlFor="text">Text</label>
       <input
         type="text"
-        placeholder="Enter the name of the planet..."
+        name="text"
+        id="text"
         value={ planetsFilter }
         onChange={ planetFilter }
         data-testid="name-filter"
