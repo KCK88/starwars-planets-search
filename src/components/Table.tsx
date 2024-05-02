@@ -12,7 +12,9 @@ export default function Table() {
     numbersFilter,
     handleNumbersChange,
     handleNumbersSubmit,
-    filterOptions } = planetsContext;
+    filterOptions,
+    filters,
+    handleExcludeFilter } = planetsContext;
   let visiblePlanets: PlanetType[] = [...planets];
 
   const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,8 +79,22 @@ export default function Table() {
         />
 
         <button type="submit" data-testid="button-filter">Filtrar</button>
-
       </form>
+      {filters.map((filter) => (
+        <p key={ filter.column } data-testid="filter">
+          {filter.column}
+          {' '}
+          {filter.operator}
+          {' '}
+          {filter.value}
+          {' '}
+          <button
+            onClick={ (event) => handleExcludeFilter(event, filter.column) }
+          >
+            🗑️
+          </button>
+        </p>
+      ))}
       <table>
         <thead>
           <tr>

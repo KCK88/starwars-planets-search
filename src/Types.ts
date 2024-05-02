@@ -29,6 +29,11 @@ export interface PlanetContextType {
   handleNumbersSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   filterOptions: string[];
   setFilterOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
+  filters: NumbersType[];
+  setFilters: React.Dispatch<React.SetStateAction<NumbersType[]>>;
+  handleExcludeFilter: (event:
+  React.MouseEvent<HTMLButtonElement>, {
+      column, operator, value }: NumbersType) => void;
 }
 
 export interface NumbersType {

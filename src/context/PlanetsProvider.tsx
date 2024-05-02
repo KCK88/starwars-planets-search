@@ -10,6 +10,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     operator: 'maior que',
     value: '0',
   });
+  const [filters, setFilters] = useState<NumbersType[]>([]);
   const [filterOptions, setFilterOptions] = useState<ColumnType[]>(['population',
     'orbital_period',
     'diameter',
@@ -35,8 +36,14 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     const options = filterOptions.filter((option) => option !== numbersFilter.column);
     setFilterOptions(options);
     setNumbersFilter({ ...numbersFilter, column: options[0] });
+    setFilters([...filters, numbersFilter]);
   };
-  console.log(filterOptions);
+
+  const handleExcludeFilter = (event:
+  React.MouseEvent<HTMLButtonElement>, column: NumbersType) => {
+    event.preventDefault();
+    console.log(filters);
+  };
 
   const filterPlanets = () => {
     const { column, operator, value } = numbersFilter;
@@ -103,7 +110,10 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         handleNumbersChange,
         handleNumbersSubmit,
         filterOptions,
-        setFilterOptions } }
+        setFilterOptions,
+        filters,
+        setFilters,
+        handleExcludeFilter } }
     >
       {children}
     </PlanetsContext.Provider>
