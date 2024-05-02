@@ -11,7 +11,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     value: '0',
   });
   const [filters, setFilters] = useState<NumbersType[]>([]);
-  const [filterOptions, setFilterOptions] = useState<ColumnType[]>(['population',
+  const [columnOptions, setColumnOptions] = useState<ColumnType[]>(['population',
     'orbital_period',
     'diameter',
     'rotation_period',
@@ -33,16 +33,23 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
   const handleNumbersSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     filterPlanets();
-    const options = filterOptions.filter((option) => option !== numbersFilter.column);
-    setFilterOptions(options);
+    const options = columnOptions.filter((option) => option !== numbersFilter.column);
+    setColumnOptions(options);
     setNumbersFilter({ ...numbersFilter, column: options[0] });
     setFilters([...filters, numbersFilter]);
   };
 
-  const handleExcludeFilter = (event:
-  React.MouseEvent<HTMLButtonElement>, column: NumbersType) => {
+  const handleColumnFilters = (event:
+  React.MouseEvent<HTMLButtonElement>, column: ColumnType) => {
     event.preventDefault();
-    console.log(filters);
+    setColumnOptions([...columnOptions, column]);
+    excludeFilters(column as unknown as NumbersType);
+  };
+
+  const excludeFilters = (column: NumbersType) => {
+    const columnFiltes = filters.filter((filter) => filter.column !== column);
+    console.log(column);
+    setFilters(columnFiltes);
   };
 
   const filterPlanets = () => {
@@ -109,11 +116,11 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         setNumbersFilter,
         handleNumbersChange,
         handleNumbersSubmit,
-        filterOptions,
-        setFilterOptions,
+        columnOptions,
+        setColumnOptions,
         filters,
         setFilters,
-        handleExcludeFilter } }
+        handleColumnFilters } }
     >
       {children}
     </PlanetsContext.Provider>

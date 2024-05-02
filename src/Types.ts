@@ -17,27 +17,28 @@ export interface PlanetType {
 }
 export interface PlanetContextType {
   planets: PlanetType[];
+  planetsFilter: string;
+  numbersFilter: NumbersType;
+  columnOptions: string[];
+  filters: NumbersType[];
   setPlanets: React.Dispatch<React.SetStateAction<PlanetType[]>>;
+  setPlanetsFilter: Dispatch<SetStateAction<string>>;
+  setNumbersFilter: React.Dispatch<React.SetStateAction<NumbersType>>;
+  setColumnOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
+  setFilters: React.Dispatch<React.SetStateAction<NumbersType[]>>;
   handleFilterChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> boolean;
-  planetsFilter: string;
-  setPlanetsFilter: Dispatch<SetStateAction<string>>;
-  numbersFilter: NumbersType;
-  setNumbersFilter: React.Dispatch<React.SetStateAction<NumbersType>>;
+
   handleNumbersChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+
   handleNumbersSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  filterOptions: string[];
-  setFilterOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
-  filters: NumbersType[];
-  setFilters: React.Dispatch<React.SetStateAction<NumbersType[]>>;
-  handleExcludeFilter: (event:
-  React.MouseEvent<HTMLButtonElement>, {
-      column, operator, value }: NumbersType) => void;
+  handleColumnFilters: (event:
+  React.MouseEvent<HTMLButtonElement>, column: ColumnType) => void;
 }
 
 export interface NumbersType {
-  column: ColumnType
+  column: ColumnType;
   operator: string;
   value: string;
 }
