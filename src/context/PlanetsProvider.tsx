@@ -4,6 +4,7 @@ import { ColumnType, NumbersType, PlanetType } from '../Types';
 
 export default function PlanetsProvider({ children } : { children: ReactNode }) {
   const [planets, setPlanets] = useState<PlanetType[]>([]);
+  const [fetchedPlanets, setFetchedPlanets] = useState<PlanetType[]>([]);
   const [planetsFilter, setPlanetsFilter] = useState('');
   const [numbersFilter, setNumbersFilter] = useState<NumbersType>({
     column: 'population',
@@ -16,6 +17,15 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     'diameter',
     'rotation_period',
     'surface_water']);
+
+  const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlanetsFilter(event.target.value);
+    if (handleFilterChange(event)) {
+      const visiblePlanets = fetchedPlanets
+        .filter((planet: PlanetType) => planet.name.includes(event.target.value));
+      setPlanets(visiblePlanets);
+    }
+  };
 
   const handleFilterChange = ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): boolean => {
@@ -43,12 +53,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
   React.MouseEvent<HTMLButtonElement>, column: ColumnType) => {
     event.preventDefault();
     setColumnOptions([...columnOptions, column]);
-    excludeFilters(column as unknown as NumbersType);
-  };
-
-  const excludeFilters = (column: NumbersType) => {
     const columnFiltes = filters.filter((filter) => filter.column !== column);
-    console.log(column);
     setFilters(columnFiltes);
   };
 
@@ -78,6 +83,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     }
 
     setPlanets(filteredPlanets);
+    console.log('planets');
   };
 
   const fetchPlanets = async () => {
@@ -98,12 +104,9 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     const fetchData = async () => {
       const planetsData = await fetchPlanets();
       setPlanets(planetsData);
-    };
-
-    if (planetsFilter === ''
-    || planetsFilter === undefined
-    || planetsFilter === null) fetchData();
-  }, [planetsFilter]);
+      setFetchedPlanets(planetsData);
+    }; fetchData();
+  }, []);
 
   return (
     <PlanetsContext.Provider
@@ -120,7 +123,9 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         setColumnOptions,
         filters,
         setFilters,
-        handleColumnFilters } }
+        handleColumnFilters,
+        planetFilter,
+      } }
     >
       {children}
     </PlanetsContext.Provider>

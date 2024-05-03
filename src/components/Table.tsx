@@ -4,29 +4,15 @@ import { PlanetType } from '../Types';
 
 export default function Table() {
   const planetsContext = useContext(PlanetsContext);
-  const { planets,
-    setPlanets,
-    planetsFilter,
-    handleFilterChange,
-    setPlanetsFilter,
+  const { planetsFilter,
     numbersFilter,
     handleNumbersChange,
     handleNumbersSubmit,
     columnOptions,
     filters,
-    handleColumnFilters } = planetsContext;
-  let visiblePlanets: PlanetType[] = [...planets];
-
-  const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPlanetsFilter(event.target.value);
-    if (handleFilterChange(event)) {
-      visiblePlanets = planets
-        .filter((planet: PlanetType) => planet.name.includes(event.target.value));
-      setPlanets(visiblePlanets);
-    } else {
-      visiblePlanets = [...planets];
-    }
-  };
+    handleColumnFilters,
+    planetFilter,
+    planets } = planetsContext;
 
   const { column, operator, value } = numbersFilter;
 
@@ -114,7 +100,7 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {visiblePlanets.map((planet: PlanetType) => (
+          {planets.map((planet: PlanetType) => (
             <tr key={ planet.name }>
               <td>{planet.name}</td>
               <td>{planet.climate}</td>
