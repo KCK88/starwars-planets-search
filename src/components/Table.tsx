@@ -13,7 +13,11 @@ export default function Table() {
     handleColumnFilters,
     planetFilter,
     planets,
-    handleRemoveAllFilters } = planetsContext;
+    handleRemoveAllFilters,
+    order,
+    handleOrderChange,
+    handleSortDirectionChange,
+    handleColumnSortSubmit } = planetsContext;
 
   const { column, operator, value } = numbersFilter;
 
@@ -67,6 +71,49 @@ export default function Table() {
 
         <button type="submit" data-testid="button-filter">Filtrar</button>
       </form>
+      <form onSubmit={ (event) => event.preventDefault() }>
+        <label htmlFor="sort">Ordenar</label>
+        <select
+          name="sort"
+          id="sort"
+          value={ order.column }
+          onChange={ handleOrderChange }
+          data-testid="column-sort"
+        >
+          {columnOptions.map((option) => (
+            <option key={ option } value={ option }>
+              {option}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="ascendente">ascendente</label>
+        <input
+          type="radio"
+          name="sortDirection"
+          id="ascendente"
+          value="ASC"
+          checked={ order.sort === 'ASC' }
+          onChange={ handleSortDirectionChange }
+          data-testid="column-sort-input-asc"
+        />
+        <label htmlFor="descendente">descendente</label>
+        <input
+          type="radio"
+          name="sortDirection"
+          id="descendente"
+          value="DESC"
+          checked={ order.sort === 'DESC' }
+          onChange={ handleSortDirectionChange }
+          data-testid="column-sort-input-desc"
+        />
+        <button
+          onClick={ handleColumnSortSubmit }
+          data-testid="column-sort-button"
+        >
+          Ordenar
+        </button>
+      </form>
+      {/* data-testid="planet-name" */}
       {filters.map((filter) => (
         <p key={ filter.column } data-testid="filter">
           {filter.column}
@@ -78,7 +125,7 @@ export default function Table() {
           <button
             onClick={ (event) => handleColumnFilters(event, filter.column) }
           >
-            🗑️
+            ❌
           </button>
         </p>
       ))}
@@ -109,7 +156,7 @@ export default function Table() {
         <tbody>
           {planets.map((planet: PlanetType) => (
             <tr key={ planet.name }>
-              <td>{planet.name}</td>
+              <td data-testid="planet-name">{planet.name}</td>
               <td>{planet.climate}</td>
               <td>{planet.created}</td>
               <td>{planet.diameter}</td>

@@ -21,13 +21,18 @@ export interface PlanetContextType {
   numbersFilter: NumbersType;
   columnOptions: string[];
   filters: NumbersType[];
+  order: OrderType;
   setPlanets: React.Dispatch<React.SetStateAction<PlanetType[]>>;
   setPlanetsFilter: Dispatch<SetStateAction<string>>;
   setNumbersFilter: React.Dispatch<React.SetStateAction<NumbersType>>;
   setColumnOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
   setFilters: React.Dispatch<React.SetStateAction<NumbersType[]>>;
+  setOrder: React.Dispatch<React.SetStateAction<OrderType>>;
   planetFilter: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemoveAllFilters: () => void
+  handleRemoveAllFilters: () => void;
+  handleOrderChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleSortDirectionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleColumnSortSubmit: () => void;
   handleFilterChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> boolean;
 
@@ -44,5 +49,10 @@ export interface NumbersType {
   operator: string;
   value: string;
 }
+export interface OrderType {
+  column: ColumnType;
+  sort: 'ASC' | 'DESC';
+}
+
 export type ColumnType =
   'population' | 'orbital_period' | 'diameter' | 'rotation_period' | 'surface_water';

@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import PlanetsContext from './PlanetsContext';
-import { ColumnType, NumbersType, PlanetType } from '../Types';
+import { ColumnType, NumbersType, OrderType, PlanetType } from '../Types';
 
 export default function PlanetsProvider({ children } : { children: ReactNode }) {
   const [planets, setPlanets] = useState<PlanetType[]>([]);
@@ -17,6 +17,60 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
     'diameter',
     'rotation_period',
     'surface_water']);
+  const [order, setOrder] = useState<OrderType>({ column: 'population', sort: 'ASC' });
+
+  const handleOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const column = event.target.value as ColumnType;
+    setOrder({ column, sort: 'ASC' });
+  };
+
+  const handleSortDirectionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const sort = event.target.value as 'ASC' | 'DESC';
+    setOrder({ ...order, sort });
+  };
+
+  const handleColumnSortSubmit = () => {
+    sortPlanets(order);
+  };
+
+  const sortPlanets = (param: OrderType) => {
+    const { column, sort } = param;
+    const sortedPlanets = [...fetchedPlanets].sort((colunA, colunB) => {
+      const columnValueA = getValue(colunA[column]);
+      const columnValueB = getValue(colunB[column]);
+
+      if (columnValueA === 'unknown' && columnValueB === 'unknown') {
+        return 0;
+      } if (columnValueA === 'unknown') {
+        return 1;
+      } if (columnValueB === 'unknown') {
+        return -1;
+      }
+
+      if (sort === 'ASC') {
+        return compareValues(columnValueA, columnValueB);
+      }
+      return compareValues(columnValueB, columnValueA);
+    });
+
+    setPlanets(sortedPlanets);
+  };
+
+  const getValue = (value: any) => {
+    if (value !== 'unknown') {
+      return Number(value);
+    }
+    return value;
+  };
+
+  const compareValues = (columnValueA: any, columnValueB: any) => {
+    if (columnValueA > columnValueB) {
+      return 1;
+    } if (columnValueA < columnValueB) {
+      return -1;
+    }
+    return 0;
+  };
 
   const planetFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPlanetsFilter(event.target.value);
@@ -134,6 +188,11 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         handleColumnFilters,
         planetFilter,
         handleRemoveAllFilters,
+        order,
+        setOrder,
+        handleOrderChange,
+        handleSortDirectionChange,
+        handleColumnSortSubmit,
       } }
     >
       {children}
