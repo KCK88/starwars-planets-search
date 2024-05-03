@@ -42,7 +42,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
 
   const handleNumbersSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    filterPlanets();
+    filterPlanets(numbersFilter);
     const options = columnOptions.filter((option) => option !== numbersFilter.column);
     setColumnOptions(options);
     setNumbersFilter({ ...numbersFilter, column: options[0] });
@@ -51,39 +51,47 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
 
   const handleColumnFilters = (event:
   React.MouseEvent<HTMLButtonElement>, column: ColumnType) => {
-    event.preventDefault();
     setColumnOptions([...columnOptions, column]);
     const columnFiltes = filters.filter((filter) => filter.column !== column);
+    columnFiltes.forEach((columnFilte) => filterPlanets(columnFilte, true));
+    if (columnFiltes.length === 0) {
+      setPlanets(fetchedPlanets);
+    }
     setFilters(columnFiltes);
   };
 
-  const filterPlanets = () => {
-    const { column, operator, value } = numbersFilter;
+  const handleRemoveAllFilters = () => {
+    setPlanets(fetchedPlanets);
+    setFilters([]);
+  };
+
+  const filterPlanets = (filter: NumbersType, remove: boolean = false) => {
+    const { column, operator, value } = filter;
+    const planetsTofilter = !remove && planets.length > 0 ? planets : fetchedPlanets;
     let filteredPlanets: PlanetType[] = [];
 
     switch (operator) {
       case 'maior que':
-        filteredPlanets = planets.filter(
+        filteredPlanets = planetsTofilter.filter(
           (planet: PlanetType) => Number(planet[column]) > Number(value),
         );
         break;
       case 'menor que':
-        filteredPlanets = planets.filter(
+        filteredPlanets = planetsTofilter.filter(
           (planet: PlanetType) => Number(planet[column]) < Number(value),
         );
         break;
       case 'igual a':
-        filteredPlanets = planets.filter(
+        filteredPlanets = planetsTofilter.filter(
           (planet: PlanetType) => Number(planet[column]) === Number(value),
         );
         break;
       default:
-        filteredPlanets = [...planets];
+        filteredPlanets = [...planetsTofilter];
         break;
     }
 
     setPlanets(filteredPlanets);
-    console.log('planets');
   };
 
   const fetchPlanets = async () => {
@@ -125,6 +133,7 @@ export default function PlanetsProvider({ children } : { children: ReactNode }) 
         setFilters,
         handleColumnFilters,
         planetFilter,
+        handleRemoveAllFilters,
       } }
     >
       {children}

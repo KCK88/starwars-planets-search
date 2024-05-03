@@ -27,6 +27,7 @@ export interface PlanetContextType {
   setColumnOptions: React.Dispatch<React.SetStateAction<ColumnType[]>>;
   setFilters: React.Dispatch<React.SetStateAction<NumbersType[]>>;
   planetFilter: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveAllFilters: () => void
   handleFilterChange: ({ target }:
   React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> boolean;
 

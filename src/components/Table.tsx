@@ -12,7 +12,8 @@ export default function Table() {
     filters,
     handleColumnFilters,
     planetFilter,
-    planets } = planetsContext;
+    planets,
+    handleRemoveAllFilters } = planetsContext;
 
   const { column, operator, value } = numbersFilter;
 
@@ -81,6 +82,12 @@ export default function Table() {
           </button>
         </p>
       ))}
+      <button
+        data-testid="button-remove-filters"
+        onClick={ handleRemoveAllFilters }
+      >
+        Remover todas filtragens
+      </button>
       <table>
         <thead>
           <tr>
