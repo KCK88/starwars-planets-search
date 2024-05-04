@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Table from '../components/Table';
 import PlanetsProvider from '../context/PlanetsProvider';
 import App from '../App';
+import { vi } from 'vitest';
 
 
 describe('Teste se o componente renderiza corretamente', ()=> {
@@ -45,4 +46,65 @@ describe('Teste se o componente renderiza corretamente', ()=> {
     fireEvent.change(inputColumn, {target:{value: '0'}})
     expect(inputColumn).toHaveValue('0')
   })
+
+  test('Testa se o select está funcionando', () =>{
+    render(<PlanetsProvider><App /></PlanetsProvider>);
+    const selectColunm = screen.getByRole('combobox', {
+      name: /ordenar/i
+    })
+    fireEvent.change(selectColunm, {target:{value: 'population'}})
+    expect(selectColunm).toHaveValue('population')
+  })
+
+    test('Testa se o select operator está funcionando', () =>{
+    render(<PlanetsProvider><App /></PlanetsProvider>);
+    const selectOperator = screen.getByRole('combobox', {
+      name: /operator/i
+    })
+    fireEvent.change(selectOperator, {target:{value: 'maior que'}})
+    expect(selectOperator).toHaveValue('maior que')
+  })
+
+     test('Testa se o select Number está funcionando', () =>{
+    render(<PlanetsProvider><App /></PlanetsProvider>);
+    const selectNumber = screen.getByRole('textbox', {  name: /number/i})
+    fireEvent.change(selectNumber, {target:{value: '0'}})
+    expect(selectNumber).toHaveValue('0')
+  })
+
+  test('Testa se o select Number está funcionando', () =>{
+
+    const MOCK_RESPONSE = {
+      ok: true,
+      status: 200,
+      json: async () => ({results: [{  climate: 'temperate',
+        created: '',
+        diameter: '',
+        edited: '',
+        films: [],
+        gravity: '',
+        name: '',
+        residents: '',
+        orbital_period: '',
+        population: '1000',
+        rotation_period: '',
+        surface_water: '',
+        terrain: '',
+        url: '',}]}),
+    } as Response;
+    
+    const mockFetch = vi.spyOn(global, 'fetch').mockResolvedValue(MOCK_RESPONSE);
+
+    render(<PlanetsProvider><App /></PlanetsProvider>);
+    screen.debug()
+    const sortButton = screen.getByRole('button', {
+      name: /ordenar/i
+    })
+    fireEvent.click(sortButton)
+    const table = screen.getByRole('table')
+    expect(table).toBeInTheDocument()
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  })
+
+
 });
